@@ -1,5 +1,7 @@
 from langchain_community.document_loaders import PyPDFLoader, PyPDFDirectoryLoader
 from langchain_core.documents import Document
+
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -27,7 +29,7 @@ class PyPDFLoader_:
         return self.docs
     
 
-class PyPDFDirectry:
+class PyPDFDirectry_:
     def __init__(
         self,
         file_path: str) -> None:
@@ -36,6 +38,7 @@ class PyPDFDirectry:
     def load(
         self,
     ) -> Iterator[Document]:
+        
         self.docs = PyPDFDirectoryLoader(self.file_path).load()
 
         return self.docs

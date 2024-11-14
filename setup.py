@@ -26,8 +26,8 @@ long_description = read_file("README.md")
 
 # Set up the package
 setup(
-    name='SDG',
-    version='0.0.1',
+    name='SDG_LLM',
+    version='0.0.5',
     author='Darshan Kumar',
     author_email='Darshankumarr03@gmail.com',
     # url='https://best-practice-and-impact.github.io/example-package-python/',
@@ -35,7 +35,8 @@ setup(
     # long_description_content_type="text/x-rst",
     # long_description=long_description,
     license="MIT license",
-    packages=find_packages(exclude=["tests"]),  # Exclude test directory from distribution
+    packages=find_packages(where="SDG_LLM/src"),
+    package_dir={'': 'SDG_LLM/src'},  # Exclude test directory from distribution
     install_requires=[
         "langchain",
         "langchain_groq",

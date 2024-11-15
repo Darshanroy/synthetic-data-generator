@@ -58,6 +58,7 @@ class RecursiveUrlLoader_(BaseModel):
 
     @field_validator('max_depth')
     def validate_max_depth(cls, v):
+        """ """
         if v <= 0:
             raise ValueError('max_depth must be greater than 0')
         return v

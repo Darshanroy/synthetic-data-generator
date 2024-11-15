@@ -1,11 +1,46 @@
 from langchain_groq import ChatGroq
 import json
 import re
-from langchain_groq import ChatGroq
-import re
 import csv
 import io
 
+class PromptGenerator:
+    """A class to generate prompts for analyzing text and extracting question-answer pairs."""
+    
+    def __init__(self, data_type):
+        """
+        Initializes the PromptGenerator with a specified data type.
+        
+        Parameters:
+        data_type (str): The type of data to extract. Supports "json" or "csv".
+        """
+        self.data_type = data_type
+
+    def generate_prompt(self, text_chunk):
+        """Generates a prompt for analyzing a chunk of text based on the specified data type."""
+        if self.data_type == "json":
+            return f"""
+                Analyze the text: {text_chunk}
+
+                Extract key information and formulate a list of question-answer pairs in JSON format.
+
+                **Example:**
+
+                "question": "What is formed when dilute sulphuric acid is added to zinc granules?",
+                "answer": "Change in state, change in colour, evolution of a gas, change in temperature."
+            """
+        elif self.data_type == "csv":
+            return f"""
+                Analyze the text: {text_chunk}
+
+                Extract key information and formulate a list of question-answer pairs in CSV format.
+
+                **Example:**
+                question,answer
+                What is formed when dilute sulphuric acid is added to zinc granules?,Change in state, change in colour, evolution of a gas, change in temperature.
+            """
+        else:
+            raise ValueError("Currently, only 'json' and 'csv' data types are supported for prompt generation.")
 
 
 class DocumentAnalyzer:
@@ -34,12 +69,13 @@ class DocumentAnalyzer:
         list: A list of extracted data in the specified format.
         """
         data_list = []
+        prompt_generator = PromptGenerator(data_type=data_type)
 
         for i in range(8, len(documents), step_num):
             # Create a chunk of text from step_num consecutive documents
             text_chunk = documents[i]
 
-            prompt = self.generate_prompt(text_chunk, data_type)
+            prompt = prompt_generator.generate_prompt(text_chunk)
 
             # Invoke the LLM with the generated prompt and process the response
             input_text = self.llm.invoke(prompt).content
@@ -53,32 +89,6 @@ class DocumentAnalyzer:
                 return None
 
         return data_list
-
-    def generate_prompt(self, text_chunk, data_type):
-        """Generates a prompt for analyzing a chunk of text based on the specified data type."""
-        if data_type == "json":
-            return f"""
-                Analyze the text: {text_chunk}
-
-                Extract key information and formulate a list of question-answer pairs in JSON format.
-
-                **Example:**
-
-                "question": "What is formed when dilute sulphuric acid is added to zinc granules?",
-                "answer": "Change in state, change in colour, evolution of a gas, change in temperature."
-            """
-        elif data_type == "csv":
-            return f"""
-                Analyze the text: {text_chunk}
-
-                Extract key information and formulate a list of question-answer pairs in CSV format.
-
-                **Example:**
-                question,answer
-                What is formed when dilute sulphuric acid is added to zinc granules?,Change in state, change in colour, evolution of a gas, change in temperature.
-            """
-        else:
-            raise ValueError("Currently, only 'json' and 'csv' data types are supported for prompt generation.")
 
     def extract_json_from_text(self, input_text):
         """
@@ -133,3 +143,33 @@ class DocumentAnalyzer:
         else:
             print("No CSV content found in the text.")
             return None
+
+# # Example usage
+# if __name__ == "__main__":
+#     api_key = "your_api_key_here"
+#     documents = [
+#         "Document content 1",
+#         "Document content 2",
+#         "Document content 3",
+#         "Document content 4",
+#         "Document content 5",
+#         "Document content 6",
+#         "Document content 7",
+#         "Document content 8",
+#         "Document content 9",
+#         "Document content 10",
+#         "Document content 11",
+#         "Document content 12",
+#         "Document content 13",
+#         "Document content 14",
+#         "Document content 15",
+#         "Document content 16",
+#         "Document content 17",
+#         "Document content 18",
+#         "Document content 19",
+#         "Document content 20"
+#     ]
+
+#     analyzer = DocumentAnalyzer(api_key=api_key)
+#     data = analyzer.extract_eval_data(documents, data_type="json", step_num=10)
+#     print(data)

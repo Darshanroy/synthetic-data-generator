@@ -27,7 +27,7 @@ long_description = read_file("README.md")
 # Set up the package
 setup(
     name='DataCrafter',
-    version='0.0.1',
+    version='0.0.2',
     author='Darshan Kumar',
     author_email='Darshankumarr03@gmail.com',
     # url='https://best-practice-and-impact.github.io/example-package-python/',

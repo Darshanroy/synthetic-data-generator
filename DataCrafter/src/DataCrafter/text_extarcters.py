@@ -70,8 +70,18 @@ class DocumentAnalyzer:
         """
         data_list = []
         prompt_generator = PromptGenerator(data_type=data_type)
+        if len(documents) > 9:
+            srt = 8
+            end = len(documents)
+            step_num = step_num
+        elif len(documents) < 9:
+            srt = 0
+            end = len(documents)
+            step_num=1
+            
+        else: pass
 
-        for i in range(8, len(documents), step_num):
+        for i in range(srt, end, step_num):
             # Create a chunk of text from step_num consecutive documents
             text_chunk = documents[i]
 

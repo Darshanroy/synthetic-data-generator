@@ -7,13 +7,13 @@ from langchain_community.document_loaders import (
     SeleniumURLLoader
 )
 from langchain_core.documents import Document
-from pydantic import BaseModel, Field, field_validator
 from typing import Iterator, Optional
 
 
-class PyPDFLoader_(BaseModel):
-    file_path: str
-    docs: Optional[Iterator[Document]] = None
+class PyPDFLoader_:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        self.docs = None
 
     def load(self) -> Iterator[Document]:
         """Load documents from a PDF file."""
@@ -21,9 +21,10 @@ class PyPDFLoader_(BaseModel):
         return self.docs
 
 
-class PyPDFDirectory_(BaseModel):
-    file_path: str
-    docs: Optional[Iterator[Document]] = None
+class PyPDFDirectory_:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        self.docs = None
 
     def load(self) -> Iterator[Document]:
         """Load documents from a directory containing PDF files."""
@@ -31,9 +32,10 @@ class PyPDFDirectory_(BaseModel):
         return self.docs
 
 
-class CSVLoader_(BaseModel):
-    file_path: str
-    docs: Optional[Iterator[Document]] = None
+class CSVLoader_:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        self.docs = None
 
     def load(self) -> Iterator[Document]:
         """Load documents from a CSV file."""
@@ -41,9 +43,10 @@ class CSVLoader_(BaseModel):
         return self.docs
 
 
-class YoutubeLoader_(BaseModel):
-    video_link: str
-    docs: Optional[Iterator[Document]] = None
+class YoutubeLoader_:
+    def __init__(self, video_link: str):
+        self.video_link = video_link
+        self.docs = None
 
     def load(self) -> Iterator[Document]:
         """Load documents from a YouTube video."""
@@ -51,17 +54,13 @@ class YoutubeLoader_(BaseModel):
         return self.docs
 
 
-class RecursiveUrlLoader_(BaseModel):
-    web_link: str
-    max_depth: int = Field(default=1, ge=1)  # Ensure max_depth is at least 1
-    docs: Optional[Iterator[Document]] = None
-
-    @field_validator('max_depth')
-    def validate_max_depth(cls, v):
-        """ """
-        if v <= 0:
+class RecursiveUrlLoader_:
+    def __init__(self, web_link: str, max_depth: int = 1):
+        if max_depth <= 0:
             raise ValueError('max_depth must be greater than 0')
-        return v
+        self.web_link = web_link
+        self.max_depth = max_depth
+        self.docs = None
 
     def load(self) -> Iterator[Document]:
         """Load documents from a URL recursively."""
@@ -72,34 +71,12 @@ class RecursiveUrlLoader_(BaseModel):
         return self.docs
 
 
-class SeleniumURLLoader_(BaseModel):
-    web_link: str
-    docs: Optional[Iterator[Document]] = None
+class SeleniumURLLoader_:
+    def __init__(self, web_link: str):
+        self.web_link = web_link
+        self.docs = None
 
     def load(self) -> Iterator[Document]:
         """Load documents from a URL using Selenium."""
         self.docs = SeleniumURLLoader(urls=[self.web_link]).load()
         return self.docs
-
-
-# Example usage
-# if __name__ == "__main__":
-#     pdf_loader = PyPDFLoader_(file_path='example.pdf')
-#     pdf_docs = pdf_loader.load()
-#     print(f"Loaded {len(list(pdf_docs))} documents from PDF.")
-
-#     csv_loader = CSVLoader_(file_path='example.csv')
-#     csv_docs = csv_loader.load()
-#     print(f"Loaded {len(list(csv_docs))} documents from CSV.")
-
-#     youtube_loader = YoutubeLoader_(video_link='https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-#     youtube_docs = youtube_loader.load()
-#     print(f"Loaded {len(list(youtube_docs))} documents from YouTube.")
-
-#     recursive_url_loader = RecursiveUrlLoader_(web_link='https://example.com', max_depth=2)
-#     recursive_url_docs = recursive_url_loader.load()
-#     print(f"Loaded {len(list(recursive_url_docs))} documents from URL recursively.")
-
-#     selenium_url_loader = SeleniumURLLoader_(web_link='https://example.com')
-#     selenium_url_docs = selenium_url_loader.load()
-#     print(f"Loaded {len(list(selenium_url_docs))} documents from URL using Selenium.")

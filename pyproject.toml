@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "SDG_LLM"  # Changed to match your setup.py package name
+name = "SynthGen"  # Changed to match your setup.py package name
 version = "0.0.5"
 description = "Synthetic data generator for LLM evaluation"
 authors = [
